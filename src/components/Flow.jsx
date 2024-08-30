@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
   ReactFlow,
   Controls,
@@ -6,6 +6,7 @@ import {
   useNodesState,
   useEdgesState,
   addEdge,
+  useReactFlow,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
@@ -25,14 +26,17 @@ const initialNodes = [
     id: "groupLayout",
     position: { x: 0, y: 0 },
     className: "light",
-    style: { backgroundColor: "rgba(255, 0, 0, 0.2)", width: 300, height: 300 },
+    style: { backgroundColor: "rgba(255, 0, 0, 0.2)" },
     type: "resizeGroup",
   },
 ];
 
 const initialEdges = [];
 
-function Flow() {
+function Flow(props) {
+  const { disable } = props;
+
+  const { getNode } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -41,25 +45,44 @@ function Flow() {
     [setEdges]
   );
 
+  function handleNodesChange(changes) {
+    const nextChanges = changes.reduce((acc, change) => {
+      if (change.type === "remove") {
+        const node = getNode(change.id);
+
+        if (node.id !== "groupLayout") {
+          return [...acc, change];
+        }
+
+        return acc;
+      }
+
+      return [...acc, change];
+    }, []);
+
+    // apply the changes we kept
+    onNodesChange(nextChanges);
+  }
+
   return (
     <ReactFlow
       colorMode="dark"
       nodes={nodes}
       edges={edges}
       fitView
-      zoomOnScroll={false}
-      nodesDraggable={false}
       maxZoom={1.5}
       minZoom={1}
+      zoomOnScroll={false}
+      nodesDraggable={disable}
+      elementsSelectable={disable}
       nodeTypes={nodeTypes}
-      onNodesChange={onNodesChange}
+      onNodesChange={handleNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
     >
       {/* <MiniMap /> */}
-      <Controls />
+      <Controls showInteractive={false} />
       <Background bgColor="#F6F6F6" />
-      <ViewportDisplay />
     </ReactFlow>
   );
 }

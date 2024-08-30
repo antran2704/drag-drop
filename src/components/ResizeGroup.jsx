@@ -7,7 +7,7 @@ export default function ResizeGroup({ data }) {
   return (
     <div
       className={clsx(
-        "flex items-center justify-center bg-transparent",
+        "flex items-center justify-center bg-transparent min-w-[400px] min-h-[400px]",
         styles.node
       )}
     >

@@ -30,27 +30,24 @@ export default function ImageNode({ id, data }) {
   }, [id, updateNodeInternals]);
 
   return (
-    <>
       <div
         style={{
           transform: `rotate(${rotation}deg)`,
         }}
         className={clsx(
           "flex items-center justify-center bg-transparent border-none",
-          styles.node
         )}
       >
         <NodeResizer isVisible={true} />
         <div
           ref={rotateControlRef}
           style={{
-            display: "block",
+            display: "inline-block",
           }}
           className={`nodrag ${styles.rotateHandle}`}
         />
 
-        <img src={data?.label} alt="door" />
+        <img src={data?.label} className="w-full h-full" alt="door" />
       </div>
-    </>
   );
 }

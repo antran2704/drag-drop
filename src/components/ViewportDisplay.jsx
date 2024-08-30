@@ -1,8 +1,10 @@
 import { useReactFlow, useStoreApi } from "@xyflow/react";
-import { useCallback } from "react";
+import { Fragment, useCallback } from "react";
 import { v4 as uuidV4 } from "uuid";
 
-export default function ViewportDisplay() {
+export default function ViewportDisplay(props) {
+  const {disable, onDisable} = props
+
   const { addNodes, getNodes } = useReactFlow();
   const store = useStoreApi();
 
@@ -36,8 +38,8 @@ export default function ViewportDisplay() {
       //   y: centerY - nodeHeightOffset + Math.random() * 100,
       // },
       position: {
-        x: centerX - nodeWidthOffset + Math.random() * 100,
-        y: centerY - nodeHeightOffset + Math.random() * 100,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
       },
       data: {
         label: store.getState().nodes.length + 1,
@@ -51,11 +53,19 @@ export default function ViewportDisplay() {
   }, [addNodes, store]);
 
   return (
-    <button
-      className="absolute right-5 top-5 py-2 px-5 border rounded-md bg-blue-300 z-50"
-      onClick={onClick}
-    >
-      Nhứk cái đầu
-    </button>
+    <div className="flex gap-5">
+      <button
+        className="py-2 px-5 border rounded-md bg-blue-300"
+        onClick={onClick}
+      >
+        Nhứk cái đầu
+      </button>
+      <button
+        className="py-2 px-5 border rounded-md bg-blue-300"
+        onClick={onDisable}
+      >
+        {disable ? "Tắt" : "Bật"} cà hẩy
+      </button>
+    </div>
   );
 }

@@ -34,12 +34,13 @@ const Note = () => {
     const newNode = {
       id,
       position: {
-        x: centerX - nodeWidthOffset + Math.random() * 100,
-        y: centerY - nodeHeightOffset + Math.random() * 100,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
       },
       data: {
         label: type === "main" ? mainDoorImage : sideDoorImage,
       },
+      style: { padding: 0 },
       type: "imageNode",
       parentId: "groupLayout",
       extent: "parent",
