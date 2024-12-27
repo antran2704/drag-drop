@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import {
   ReactFlow,
   Controls,
@@ -10,15 +10,16 @@ import {
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
-import ViewportDisplay from "./ViewportDisplay";
 import ResizeRotateNode from "./ResizeRotateNode";
 import ImageNode from "./ImageNode";
 import ResizeGroup from "./ResizeGroup";
+import ResizeRotateLabelNode from "./ResizeRotateLabelNode";
 
 const nodeTypes = {
   resizeRotate: ResizeRotateNode,
   imageNode: ImageNode,
   resizeGroup: ResizeGroup,
+  resizeLabelRotate: ResizeRotateLabelNode,
 };
 
 const initialNodes = [

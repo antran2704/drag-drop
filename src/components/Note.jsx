@@ -9,7 +9,50 @@ const Note = () => {
   const { addNodes } = useReactFlow();
   const store = useStoreApi();
 
-  const onClick = useCallback((type) => {
+  const onClick = useCallback(
+    (type) => {
+      // Get the basic info about the viewport
+      const {
+        height,
+        width,
+        transform: [transformX, transformY, zoomLevel],
+      } = store.getState();
+      const zoomMultiplier = 1 / zoomLevel;
+
+      // Figure out the center of the current viewport
+      const centerX =
+        -transformX * zoomMultiplier + (width * zoomMultiplier) / 2;
+      const centerY =
+        -transformY * zoomMultiplier + (height * zoomMultiplier) / 2;
+
+      // Add offsets for the height/width of the new node
+      // (Assuming that you don't have to calculate this as well
+      const nodeWidthOffset = 100 / 2;
+      const nodeHeightOffset = 100 / 2;
+
+      // Standard addition of node with desired x and y
+      // copy and pasted from the React Flow examples
+      const id = uuidV4();
+      const newNode = {
+        id,
+        position: {
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+        },
+        data: {
+          label: type === "main" ? mainDoorImage : sideDoorImage,
+        },
+        style: { padding: 0 },
+        type: "imageNode",
+        parentId: "groupLayout",
+        extent: "parent",
+      };
+      addNodes(newNode);
+    },
+    [addNodes, store]
+  );
+
+  const onAddLabel = useCallback(() => {
     // Get the basic info about the viewport
     const {
       height,
@@ -34,16 +77,14 @@ const Note = () => {
     const newNode = {
       id,
       position: {
-        x: Math.random() * 100,
-        y: Math.random() * 100,
+        x: centerX - nodeWidthOffset + Math.random() * 100,
+        y: centerY - nodeHeightOffset + Math.random() * 100,
       },
       data: {
-        label: type === "main" ? mainDoorImage : sideDoorImage,
+        label: "test label",
       },
       style: { padding: 0 },
-      type: "imageNode",
-      parentId: "groupLayout",
-      extent: "parent",
+      type: "resizeLabelRotate",
     };
     addNodes(newNode);
   }, [addNodes, store]);
@@ -78,11 +119,23 @@ const Note = () => {
       </div>
 
       <div className="flex items-center gap-5">
-        <button onClick={() => onClick("main")} className="py-2 px-5 border rounded-md bg-blue-300">
+        <button
+          onClick={() => onClick("main")}
+          className="py-2 px-5 border rounded-md bg-blue-300"
+        >
           Thêm cửa chính
         </button>
-        <button onClick={() => onClick("side")} className="py-2 px-5 border rounded-md bg-blue-300">
+        <button
+          onClick={() => onClick("side")}
+          className="py-2 px-5 border rounded-md bg-blue-300"
+        >
           Thêm cửa phụ
+        </button>
+        <button
+          onClick={onAddLabel}
+          className="py-2 px-5 border rounded-md bg-blue-300"
+        >
+          Thêm label
         </button>
       </div>
     </div>
